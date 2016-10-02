@@ -125,10 +125,10 @@ int countInliers(const FeatureSet &f1, const FeatureSet &f2,
 		//compute distance error with align image
 		int xDistance = f2[id2].x - xTranslation;
 		int yDistance = f2[id2].y - yTranslation;
-		double errorDistance = pow(xDistance,2) + pow(yTranslation,2);
+		double errorDistance = pow(xDistance,2) + pow(yDistance,2);
 		
 		//if error is small take it as inlier
-		if(errorDistance < RANSACthresh){
+		if(errorDistance < pow(RANSACthresh,2)){
 			count++;
 			inliers.push_back(i);
 		}
@@ -184,10 +184,10 @@ int leastSquaresFit(const FeatureSet &f1, const FeatureSet &f2,
 
     M[0][0] = 1;
     M[0][1] = 0;
-    M[0][2] = u;
+    M[0][2] = -u;
     M[1][0] = 0;
     M[1][1] = 1;
-    M[1][2] = v;
+    M[1][2] = -v;
     M[2][0] = 0;
     M[2][1] = 0;
     M[2][2] = 1;
