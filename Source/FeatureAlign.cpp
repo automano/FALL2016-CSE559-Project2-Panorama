@@ -59,7 +59,8 @@ int alignPair(const FeatureSet &f1, const FeatureSet &f2,
 		int id2 = matches[match_id].id2 - 2;
 		int u = f2[id2].x - f1[id1].x;
 		int v = f2[id2].y - f1[id1].y;
-		CTransform3x3::Translation(u, v);
+		tempM[0][2] = u;
+		tempM[1][2] = v;
 		
 		int inliersCount = countInliers(f1, f2, matches, m, f, tempM, RANSACthresh, tempInliers);
 		//check inliers amount 
