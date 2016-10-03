@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <title>Project2</title>
 </head>
 <body>
 <h1>Project 2: Panorama Mosaic Stitching</h1>
-<h2>By Zheing Li 445612 <br><br>at 2016-10-05</h2>
+<h3>By Zheing Li 445612 <br><br>at 2016-10-05</h3>
 <div style='text-align: left'>
 <div>
-<h3><b>1. Preparaion Work</b></h3>
+<h2><b>1. Preparaion Work</b></h2>
 <p>The very first job is to compute focal length. I use  <a href="http://www.vision.caltech.edu/bouguetj/calib_doc/index.html">Jean-yves' Calibration Toolbox</a> and follow those steps in  its guidance.</p>
 <p>I take 16 photos for the cheakboard pattern from 16 different angle.<br><center><img alt="cheackbox" src="images/image001.jpg"></center></p>
 <p>Then extract the grid corner. I set (Wintx,Winty) to (5,5), and size dx is 30mm, also dy is 30mm. One of 16 results is shown below.<br>
@@ -28,13 +28,13 @@
 <table>
         <tr>
             <td>
-                <img style="width: 420px;height: 315px;" alt="calib1" src="images/image004.jpg">
+                <img style="width: 420px;height: 315px;" alt="calib1" src="images/image004.jpg" border="1">
             </td>
             <td>
-                <img style="width: 420px;height: 315px;" alt="calib2" src="images/image005.jpg">
+                <img style="width: 420px;height: 315px;" alt="calib2" src="images/image005.jpg" border="1">
             </td>
             <td>
-                <img style="width: 420px;height: 315px;" alt="calib3" src="images/image006.jpg">
+                <img style="width: 420px;height: 315px;" alt="calib3" src="images/image006.jpg" border="1">
             </td>
         </tr>
 </table>
@@ -48,22 +48,9 @@
 <br>Pixel error:          err = [ 0.94628   0.67602 ]<br>
 <br>Image size: 640*480<br>
 </p>
-<p><span style="color: red">Extra Credit</span>: This is the comparison between images with distortion and without distortion.<br>
-<center><table>
-    <tr>
-        <td>
-            <img alt="distortion" src="images/image001.jpg"><br><center>Before radial distortion</center><br>
-        </td>
-        <td>
-            <img alt="nodistortion" src="images/image002.jpg"><br><center>After ridial distortion</center><br>
-        </td>
-    </tr>
-</table>
-</center>
-</p>
 </div>
 <div>
-<h3><b>2. Implementation Detail</b></h3>
+<h2><b>2. Implementation Detail</b></h2>
 <p>
 (1) I use <a href="http://www.cs.ubc.ca/%7Elowe/keypoints/"> SIFT features</a>, becuase this algorithm is much more robust than another algorithms. But the features matcher I use is ratio feature matching I inplemented in Project1.
 </p>
@@ -74,15 +61,27 @@ Apply radial distortion using the equation from the lecture notes <a href="http:
 <table>
     <tr>
         <td>
-            <img style="width: 640px;height: 480px;" alt="stitching" src="images/06-1-stitching.jpg">
+            <img style="width: 640px;height: 480px;" alt="stitching" src="images/06-1-stitching.jpg" border="1">
         </td>
         <td>
-            <img style="width: 640px;height: 480px;" alt="distortion" src="images/05-cameras-3.jpg">
+            <img style="width: 640px;height: 480px;" alt="distortion" src="images/05-cameras-3.jpg" border="1">
         </td>
     </tr>
 </table>
 </center>
-
+</p>
+<p><span style="color: red">Extra Credit</span>: This is the comparison between images with distortion and without distortion. We can tell <span style="color: green"><i>WarpSpherical.cpp</i></span> works pretty well.<br>
+<center><table>
+    <tr>
+        <td>
+            <img alt="distortion" src="images/.jpg"><br><center>Before radial distortion</center><br>
+        </td>
+        <td>
+            <img alt="nodistortion" src="images/.jpg"><br><center>After ridial distortion</center><br>
+        </td>
+    </tr>
+</table>
+</center>
 </p>
 <p>
 (3) Then I implement <span style="color: green"><i>FeatureAlign.cpp</i></span> to compute the alignment of two images. 
@@ -92,13 +91,23 @@ For this project, motion model is only translation which just have two freedom.
 After repeated trials, the motion estimate with the largest number of inliers is used to compute a least squares estimate for the motion, which is then returned in the motion estimate M.
 <span style="color: green"><i>CountInliers</i></span> computes the number of matches that have a distance below RANSACthresh is computed. It also returns a list of inlier match ids.
 <span style="color: green"><i>LeastSquaresFit</i></span> computes a least squares estimate for the translation using all of the matches previously estimated as inliers. It returns the resulting translation estimate in the last column of M. 
-Below is the comparison of my pairlist of yosemite images set with the pairlist project2 alreay provided.
+<br><br>Below is the comparison of my pairlist of yosemite images set with the project2's example pairlist. The X translation and Y translation are very similar. So, <span style="color: green"><i>FeatureAlign.cpp</i></span> can successfully compute the alignment of two images.
 <center>
-	<img alt="mypairlist" src="images/">
-	
-	<img alt="projectpairlist" src="images/">
+	<img style="width: 1000px;height: 150px;" alt="mypairlist" src="images/mypairlist.jpg" border="1">
+    <br>My pairlist<br><br>
+
+	<img style="width: 1000px;height: 150px;" alt="projectpairlist" src="images/pairlist4.jpg" border="1">
+	<br>Eaxmple pairlist
 </center>
 </p>
+<p>
+(4) To Stitch and crop the resulting aligned images. Firstly, I compute the final stitched image size and absolute displacements in the panorama. 
+Then, I resample each image to its final location and blend it with its neighbors. 
+My algorithm will only blend in the seam of each image pair and keep another parts remain.  
+The results will demonstrate in the last part of this report, including eaxmple test-sets and my own images.
+</div>
+<div>
+<h2><strong>3. Panorama</strong></h2>
 </div>
 </div>
 </body>
