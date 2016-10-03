@@ -6,10 +6,83 @@
 <body>
 <h1>Project 2: Panorama Mosaic Stitching</h1>
 <h2>By Zheing Li 445612 <br><br>at 2016-10-05</h2>
-<h3>1. Preparaion Work</h3>
-<p>The very first job is to compute focal length. I use  <a href="http://www.vision.caltech.edu/bouguetj/calib_doc/index.html">Jean-yves' Calibration Toolbox</a>
-and follow those steps in  its guidance.</p> <p>I take 16 photos for the cheakboard pattern from 16 different angle.<img alt="cheackbox" src="images/1.jpg"> </p>
-<p>Then extract the grid corner. I set (Wintx,Winty) to (5,5), and size dx is 30mm. One of 16 results is shown below.<img alt="corner1" src="images/2.jpg"></p>
-
+<div style='text-align: left'>
+<div>
+<h3><b>1. Preparaion Work</b></h3>
+<p>The very first job is to compute focal length. I use  <a href="http://www.vision.caltech.edu/bouguetj/calib_doc/index.html">Jean-yves' Calibration Toolbox</a> and follow those steps in  its guidance.</p>
+<p>I take 16 photos for the cheakboard pattern from 16 different angle.<br><center><img alt="cheackbox" src="images/image001.jpg"></center></p>
+<p>Then extract the grid corner. I set (Wintx,Winty) to (5,5), and size dx is 30mm, also dy is 30mm. One of 16 results is shown below.<br>
+<table>
+    <tr>
+        <td>
+            <img alt="corner1" src="images/image002.jpg">
+        </td>
+        <td>
+            <img alt="corner1" src="images/image003.jpg">
+        </td>
+    </tr>
+</table>
+</p>
+<p>Then call functions <i>Calibration</i> and <i>Recomp.corners</i>, I can get more precise focal length. I use this f as focal length and do distortion with coefficients k1 and k2.
+<br>
+<table>
+        <tr>
+            <td>
+                <img style="width: 420px;height: 315px;" alt="calib1" src="images/image004.jpg">
+            </td>
+            <td>
+                <img style="width: 420px;height: 315px;" alt="calib2" src="images/image005.jpg">
+            </td>
+            <td>
+                <img style="width: 420px;height: 315px;" alt="calib3" src="images/image006.jpg">
+            </td>
+        </tr>
+</table>
+<br>The result data after calibration are<br>
+</p>
+<p style="margin-left:280px">
+<br>Focal Length:          fc = [ <span style="color: red">951.53505</span>   1084.73918 ] uncertainty [ 14.62528   17.53058 ]<br>
+<br>Principal point:       cc = [ 376.22201   176.93848 ] ? [ 23.84237   34.71087 ]<br>
+<br>Skew:             alpha_c = [ 0.00000 ] ? [ 0.00000  ]   => angle of pixel axes = 90.00000 uncertainty 0.00000 degrees<br>
+<br>Distortion:            kc = [ <span style="color: red">-0.26251   0.50053</span>  -0.01008   0.00897  0.00000 ] uncertainty [ 0.14172   1.32070   0.00634   0.00706  0.00000 ]<br>
+<br>Pixel error:          err = [ 0.94628   0.67602 ]<br>
+<br>Image size: 640*480<br>
+</p>
+<p><span style="color: red">Extra Credit</span>: This is the comparison between images with distortion and without distortion.<br>
+<center><table>
+    <tr>
+        <td>
+            <img alt="distortion" src="images/image001.jpg"><br><center>Before radial distortion</center><br>
+        </td>
+        <td>
+            <img alt="nodistortion" src="images/image002.jpg"><br><center>After ridial distortion</center><br>
+        </td>
+    </tr>
+</table>
+</center>
+</p>
+</div>
+<div>
+<h3><b>2. Implementation Detail</b></h3>
+<p>I implement <span style="color: green"><i>WarpSpherical.cpp</i></span> by using the principle from our leature <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/06-1-stitching.pdf">06-1-stitching Page25 (Spherical Warping)</a>
+and leature <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/05-cameras-3.pdf">05-cameras-3 Page50 (Modeling Radial Distortion)</a>.<br>
+<center>
+<table>
+    <tr>
+        <td>
+            <img style="width: 640px;height: 480px;" alt="stitching" src="images/06-1-stitching.jpg">
+        </td>
+        <td>
+            <img style="width: 640px;height: 480px;" alt="distortion" src="images/05-cameras-3.jpg">
+        </td>
+    </tr>
+</table>
+</center>
+</p>
+<p>
+    Then I implement <span style="color: green"><i>FeatureAlign.cpp</i></span>
+</p>
+</div>
+</div>
 </body>
 </html>
