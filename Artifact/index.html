@@ -64,8 +64,12 @@
 </div>
 <div>
 <h3><b>2. Implementation Detail</b></h3>
-<p>I implement <span style="color: green"><i>WarpSpherical.cpp</i></span> by using the principle from our leature <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/06-1-stitching.pdf">06-1-stitching Page25 (Spherical Warping)</a>
-and leature <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/05-cameras-3.pdf">05-cameras-3 Page50 (Modeling Radial Distortion)</a>.<br>
+<p>
+(1) I use <a href="http://www.cs.ubc.ca/%7Elowe/keypoints/"> SIFT features</a>, becuase this algorithm is much more robust than another algorithms. But the features matcher I use is ratio feature matching I inplemented in Project1.
+</p>
+<p>(2) I implement <span style="color: green"><i>WarpSpherical.cpp</i></span> by using the principle from our leature. 
+Convert the given spherical image coordinate into the corresponding planar image coordinate using the coordinate transformation equation from the lecture notes <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/06-1-stitching.pdf">06-1-stitching Page25 (Spherical Warping)</a>. 
+Apply radial distortion using the equation from the lecture notes <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/05-cameras-3.pdf">05-cameras-3 Page50 (Modeling Radial Distortion)</a>.<br>
 <center>
 <table>
     <tr>
@@ -78,9 +82,22 @@ and leature <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/
     </tr>
 </table>
 </center>
+
 </p>
 <p>
-    Then I implement <span style="color: green"><i>FeatureAlign.cpp</i></span>
+(3) Then I implement <span style="color: green"><i>FeatureAlign.cpp</i></span> to compute the alignment of two images. 
+<span style="color: green"><i>AlignPair</i></span> takes two feature sets, f1 and f2, the list of feature matches obtained from the SIFT features, a motion model, and estimates and inter-image transform matrix M. 
+For this project, motion model is only translation which just have two freedom.
+<span style="color: green"><i>AlignPair</i></span> uses RANSAC (RAndom SAmpling Consensus) to pull out a minimal set of feature matches, estimates the corresponding motion and then invokes countInliers to count how many of the feature matches agree with the current motion estimate. 
+After repeated trials, the motion estimate with the largest number of inliers is used to compute a least squares estimate for the motion, which is then returned in the motion estimate M.
+<span style="color: green"><i>CountInliers</i></span> computes the number of matches that have a distance below RANSACthresh is computed. It also returns a list of inlier match ids.
+<span style="color: green"><i>LeastSquaresFit</i></span> computes a least squares estimate for the translation using all of the matches previously estimated as inliers. It returns the resulting translation estimate in the last column of M. 
+Below is the comparison of my pairlist of yosemite images set with the pairlist project2 alreay provided.
+<center>
+	<img alt="mypairlist" src="images/">
+	
+	<img alt="projectpairlist" src="images/">
+</center>
 </p>
 </div>
 </div>
