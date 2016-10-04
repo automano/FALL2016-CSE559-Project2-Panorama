@@ -1,0 +1,61 @@
+#use irfanview convert jpg to tga
+
+# Warp the input images
+#  usage: Panorama sphrWarp input.tga output.tga f [k1 k2]
+Panorama sphrWarp DSCF6513.tga DSCF6513.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6514.tga DSCF6514.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6515.tga DSCF6515.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6516.tga DSCF6516.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6517.tga DSCF6517.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6518.tga DSCF6518.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6519.tga DSCF6519.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6520.tga DSCF6520.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6521.tga DSCF6521.warp.tga 951.535 -0.2625 0.5005
+Panorama sphrWarp DSCF6522.tga DSCF6522.warp.tga 951.535 -0.2625 0.5005
+
+#use irfanview convert tga to pgm
+
+#Detect feature by sift
+#use irfanview convert tga to pgm
+siftWin32 <DSCF6513.warp.pgm> DSCF6513.warp.key
+siftWin32 <DSCF6514.warp.pgm> DSCF6514.warp.key
+siftWin32 <DSCF6515.warp.pgm> DSCF6515.warp.key
+siftWin32 <DSCF6516.warp.pgm> DSCF6516.warp.key
+siftWin32 <DSCF6517.warp.pgm> DSCF6517.warp.key
+siftWin32 <DSCF6518.warp.pgm> DSCF6518.warp.key
+siftWin32 <DSCF6519.warp.pgm> DSCF6519.warp.key
+siftWin32 <DSCF6520.warp.pgm> DSCF6520.warp.key
+siftWin32 <DSCF6521.warp.pgm> DSCF6521.warp.key
+siftWin32 <DSCF6522.warp.pgm> DSCF6522.warp.key
+
+# Match features
+#  usage: Features matchSIFTFeatures feat1 feat2 threshold matchFile matchType
+Features matchSIFTFeatures DSCF6513.warp.key DSCF6514.warp.key 0.8 match_13_14.txt 2
+Features matchSIFTFeatures DSCF6514.warp.key DSCF6515.warp.key 0.8 match_14_15.txt 2
+Features matchSIFTFeatures DSCF6515.warp.key DSCF6516.warp.key 0.8 match_15_16.txt 2
+Features matchSIFTFeatures DSCF6516.warp.key DSCF6517.warp.key 0.8 match_16_17.txt 2
+Features matchSIFTFeatures DSCF6517.warp.key DSCF6518.warp.key 0.8 match_17_18.txt 2
+Features matchSIFTFeatures DSCF6518.warp.key DSCF6519.warp.key 0.8 match_18_19.txt 2
+Features matchSIFTFeatures DSCF6519.warp.key DSCF6520.warp.key 0.8 match_19_20.txt 2
+Features matchSIFTFeatures DSCF6520.warp.key DSCF6521.warp.key 0.8 match_20_21.txt 2
+Features matchSIFTFeatures DSCF6521.warp.key DSCF6522.warp.key 0.8 match_21_22.txt 2
+
+
+# Align the pairs using matched features
+#  usage: Panorama alignPair feat1 feat2 matchfile ransacRounds ransacThresh
+Panorama alignPair DSCF6513.warp.key DSCF6514.warp.key match_13_14.txt 200 3 sift
+Panorama alignPair DSCF6514.warp.key DSCF6515.warp.key match_14_15.txt 200 3 sift
+Panorama alignPair DSCF6515.warp.key DSCF6516.warp.key match_15_16.txt 200 3 sift
+Panorama alignPair DSCF6516.warp.key DSCF6517.warp.key match_16_17.txt 200 3 sift
+Panorama alignPair DSCF6517.warp.key DSCF6518.warp.key match_17_18.txt 200 3 sift
+Panorama alignPair DSCF6518.warp.key DSCF6519.warp.key match_18_19.txt 200 3 sift
+Panorama alignPair DSCF6519.warp.key DSCF6520.warp.key match_19_20.txt 200 3 sift
+Panorama alignPair DSCF6520.warp.key DSCF6521.warp.key match_20_21.txt 200 3 sift
+Panorama alignPair DSCF6521.warp.key DSCF6522.warp.key match_21_22.txt 200 3 sift
+
+#generate the pairlist file
+
+# Finally, blend these four images together
+#  Assumes the output of the three commands above is saved to pairlist4.txt
+#  usage: Panorama blendPairs pairlist.txt outfile.tga blendWidth
+Panorama blendPairs pairlist.txt EAlibPanorama.tga 100
