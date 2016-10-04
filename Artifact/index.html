@@ -2,16 +2,20 @@
 <html lang="en">
 <head>
 <title>Project2</title>
+<style>
+	p{line-height: 22px;}
+	body{font-size: large;font-family: sans-serif;}
+</style>
 </head>
 <body>
 <h1>Project 2: Panorama Mosaic Stitching</h1>
-<h3>By Zheing Li 445612 <br><br>at 2016-10-05</h3>
+<h3>By Zhening Li 445612 <br><br>at 2016-10-05</h3>
 <div style='text-align: left'>
 <div>
 <h2><b>1. Preparaion Work</b></h2>
 <p>The very first job is to compute focal length. I use  <a href="http://www.vision.caltech.edu/bouguetj/calib_doc/index.html">Jean-yves' Calibration Toolbox</a> and follow those steps in  its guidance.</p>
-<p>I take 16 photos for the cheakboard pattern from 16 different angle.<br><center><img alt="cheackbox" src="images/image001.jpg"></center></p>
-<p>Then extract the grid corner. I set (Wintx,Winty) to (5,5), and size dx is 30mm, also dy is 30mm. One of 16 results is shown below.<br>
+<p>I take 16 photos for the cheakboard pattern from 16 different angles.<br><center><img alt="cheackbox" src="images/image001.jpg"></center></p>
+<p>Then extract the grid corner. I set (Wintx,Winty) to (5,5), and size dx is 30mm, also, dy is 30mm. One of 16 results is shown below.<br>
 <table>
     <tr>
         <td>
@@ -23,7 +27,7 @@
     </tr>
 </table>
 </p>
-<p>Then call functions <i>Calibration</i> and <i>Recomp.corners</i>, I can get more precise focal length. I use this f as focal length and do distortion with coefficients k1 and k2.
+<p>Then call functions <span style="color: green;"><i>Calibration</i></span> and <span style="color: green;"><i>Recomp.corners</i></span>, I can get more precise focal length. I use this f as focal length and do distortion correction with coefficients k1 and k2.
 <br>
 <table>
         <tr>
@@ -52,7 +56,7 @@
 <div>
 <h2><b>2. Implementation Detail</b></h2>
 <p>
-(1) I use <a href="http://www.cs.ubc.ca/%7Elowe/keypoints/"> SIFT features</a>, becuase this algorithm is much more robust than another algorithms. But the features matcher I use is ratio feature matching I inplemented in Project1.
+(1) I use <a href="http://www.cs.ubc.ca/%7Elowe/keypoints/"> SIFT features</a>, becuase this algorithm is much more robust than another algorithms. But the features matcher I use is ratio feature matching I implemented in Project1.
 </p>
 <p>(2) I implement <span style="color: green"><i>WarpSpherical.cpp</i></span> by using the principle from our leature. 
 Convert the given spherical image coordinate into the corresponding planar image coordinate using the coordinate transformation equation from the lecture notes <a href="http://www.cse.wustl.edu/~furukawa/cse559a/2016_fall/notes/06-1-stitching.pdf">06-1-stitching Page25 (Spherical Warping)</a>. 
@@ -70,14 +74,22 @@ Apply radial distortion using the equation from the lecture notes <a href="http:
 </table>
 </center>
 </p>
-<p><span style="color: red">Extra Credit</span>: This is the comparison between images with distortion and without distortion. We can tell <span style="color: green"><i>WarpSpherical.cpp</i></span> works pretty well.<br>
+<p><span style="color: red">Extra Credit</span>: This is the comparison between images with distortion and without distortion. The first photo is taken inside East Asian library. Second photo is Brookings Hall. We can tell <span style="color: green"><i>WarpSpherical.cpp</i></span> works pretty well.<br>
 <center><table>
     <tr>
         <td>
-            <img alt="distortion" src="images/.jpg"><br><center>Before radial distortion</center><br>
+            <img alt="Before distortion correction" src="images/EAlibwithoutdistortion.png"><br><center>Before radial distortion correction</center><br>
         </td>
         <td>
-            <img alt="nodistortion" src="images/.jpg"><br><center>After ridial distortion</center><br>
+            <img alt="After distortion correction" src="images/EAlibwithdistortion.png"><br><center>After ridial distortion correction</center><br>
+        </td>
+    </tr>
+	 <tr>
+        <td>
+            <img alt="Before distortion correction" src="images/Brookingswithoutdistortion.png"><br><center>Before radial distortion correction</center><br>
+        </td>
+        <td>
+            <img alt="After distortion correction" src="images/Brookingswithdistortion.png"><br><center>After ridial distortion correction</center><br>
         </td>
     </tr>
 </table>
@@ -86,12 +98,12 @@ Apply radial distortion using the equation from the lecture notes <a href="http:
 <p>
 (3) Then I implement <span style="color: green"><i>FeatureAlign.cpp</i></span> to compute the alignment of two images. 
 <span style="color: green"><i>AlignPair</i></span> takes two feature sets, f1 and f2, the list of feature matches obtained from the SIFT features, a motion model, and estimates and inter-image transform matrix M. 
-For this project, motion model is only translation which just have two freedom.
+For this project, motion model is only translation which just have two degrees of freedom.
 <span style="color: green"><i>AlignPair</i></span> uses RANSAC (RAndom SAmpling Consensus) to pull out a minimal set of feature matches, estimates the corresponding motion and then invokes countInliers to count how many of the feature matches agree with the current motion estimate. 
 After repeated trials, the motion estimate with the largest number of inliers is used to compute a least squares estimate for the motion, which is then returned in the motion estimate M.
 <span style="color: green"><i>CountInliers</i></span> computes the number of matches that have a distance below RANSACthresh is computed. It also returns a list of inlier match ids.
 <span style="color: green"><i>LeastSquaresFit</i></span> computes a least squares estimate for the translation using all of the matches previously estimated as inliers. It returns the resulting translation estimate in the last column of M. 
-<br><br>Below is the comparison of my pairlist of yosemite images set with the project2's example pairlist. The X translation and Y translation are very similar. So, <span style="color: green"><i>FeatureAlign.cpp</i></span> can successfully compute the alignment of two images.
+<br><br>Below is the comparison of my pairlist of yosemite images set with the project2's example pairlist. The translations in X direction and Y direction are very similar. So, <span style="color: green"><i>FeatureAlign.cpp</i></span> can successfully compute the alignment of two images.
 <center>
 	<img style="width: 1000px;height: 150px;" alt="mypairlist" src="images/mypairlist.jpg" border="1">
     <br>My pairlist<br><br>
@@ -103,11 +115,47 @@ After repeated trials, the motion estimate with the largest number of inliers is
 <p>
 (4) To Stitch and crop the resulting aligned images. Firstly, I compute the final stitched image size and absolute displacements in the panorama. 
 Then, I resample each image to its final location and blend it with its neighbors. 
-My algorithm will only blend in the seam of each image pair and keep another parts remain.  
-The results will demonstrate in the last part of this report, including eaxmple test-sets and my own images.
+My algorithm will only blend in the seam of each image pair and keep another parts remain.
+It means I only use Alpha Blending. My panoramas are a little bit blur and still have ghost.
+Maybe, in the future, I will try some advanced blending schemes, like pyramid blending or Laplace blending.
+<br>The results will demonstrate in the last part of this report, including eaxmple test-sets and my own images.
 </div>
 <div>
 <h2><strong>3. Panorama</strong></h2>
+(1) Yosemite<br>
+<center><table>
+    <tr>
+		<img width="60%" alt="yosemiteExample" src="images/yosemiteExample.jpg"><br><center>Yosemite panorama in test-sets</center><br>
+	</tr>
+	<tr>
+        <img width="100%" alt="yosemitePanorama" src="images/yosemitePanorama.jpg"><br><center>Yosemite panorama using my algorithm</center><br><center><a href="images/yosemitePanorama.jpg">High resolution</a></center><br>
+</center>
+    </tr>
+</table>
+</center>
+<br>
+(2) Compus<br>
+<center><table>
+    <tr>
+		<img width="100%" alt="campusExample" src="images/campusExample.jpg"><br><center>Campus panorama in test-sets</center><br>
+	</tr>
+	<tr>
+        <img width="100%" alt="campusPanorama" src="images/campusPanorama.jpg"><br><center>Campus panorama using my algorithm</center><br><center><a href="images/campusPanorama.jpg">High resolution</a></center><br>
+</center>
+    </tr>
+</table>
+</center>
+<br>
+(3) East Asian Library     (indoor view)<br>
+<center>
+        <img width="100%" alt="East Asian Library" src="images/EAlibPanorama.jpg"><br><center><a href="images/EAlibPanorama.jpg">High resolution</a></center><br>
+</center>
+<br>
+(4) Brookings Hall      (outdoor view)<br>
+<center>
+        <img width="100%" alt="Brookings Hall" src="images/BrookingsPanorama.jpg"><br><center><a href="images/BrookingsPanorama.jpg">High resolution</a></center><br>
+</center>
+<br>
 </div>
 </div>
 </body>
